@@ -1,6 +1,9 @@
 # Python virtual Env
 venv
 
+# Python cache
+*__pycache__
+
 # IDE files
 .idea
 

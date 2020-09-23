@@ -12,4 +12,4 @@ class Config(object):
 
 class DevConfig(Config):
     DEBUG = True
-    MONGODB_SETTINGS = mongo_uri
+    MONGODB_SETTINGS = {'host': mongo_uri}
