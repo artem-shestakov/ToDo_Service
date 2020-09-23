@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  mongo_db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=todo
+    env_file:
+      - .env
+    ports:
+    - '27017-27019:27017-27019'
+    volumes:
+    - type: volume
+      source: db_todo
+      target: /data/db
+    - type: bind
+      source: ./db/init-mongo.js
+      target: /docker-entrypoint-initdb.d/init-mongo.js
+volumes:
+  db_todo:
