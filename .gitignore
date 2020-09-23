@@ -1,0 +1,10 @@
+# Python virtual Env
+venv
+
+# IDE files
+.idea
+
+#Secrets
+.env
+db/init-mongo.js
+
