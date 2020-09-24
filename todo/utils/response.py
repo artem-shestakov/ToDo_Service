@@ -1,4 +1,4 @@
-from flask import make_response, jsonify
+from flask import make_response, jsonify, current_app
 
 
 def response_with(response, headers={}, value=None, message=None):
@@ -17,5 +17,5 @@ def response_with(response, headers={}, value=None, message=None):
         result.update({'message': response['message'] + f' {message}'})
     result.update({'code': response['code']})
     headers.update({'Access-Control-Allow-Origin': '*'})
-    headers.update({'Server': 'ToDo REST API server'})
+    headers.update({'Server': current_app.config['NAME']})
     return make_response(jsonify(result), response['http_code'], headers)

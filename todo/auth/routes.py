@@ -11,6 +11,15 @@ auth_blueprint = Blueprint(
 )
 
 
+@auth_blueprint.route('/users', methods=['GET'])
+def get_users():
+    """Getting all users"""
+    users = User.objects.all()
+    users_schema = UserSchema(many=True, only=['id', 'email', 'first_name', 'last_name'])
+    users = users_schema.dump(users)
+    return response_with(response_code.SUCCESS, value={'users': users})
+
+
 @auth_blueprint.route('/user', methods=['POST'])
 def create_user():
     """Create user by POST request"""
