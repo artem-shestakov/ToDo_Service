@@ -1,23 +1,26 @@
 from flask import Blueprint, make_response, jsonify, request
-from todo.board.model import Board, BoardSchema
+from todo.board.models import Board, BoardSchema
+from todo.auth.models import User, UserSchema
 
-api_blueprint = Blueprint(
-    "api",
+board_blueprint = Blueprint(
+    "board",
     __name__,
-    url_prefix='/api'
+    url_prefix='/api/board'
 )
 
 
-@api_blueprint.route('/boards', methods=['GET'])
-def index():
+@board_blueprint.route('/all', methods=['GET'])
+def get_all_boards():
+    """Get all boards"""
     boards = Board.objects.all()
-    board_schema = BoardSchema(many=True, only=['id', 'name'])
+    board_schema = BoardSchema(many=True, only=['id', 'name', 'user'])
     boards = board_schema.dump(boards)
     return make_response(jsonify({'boards': boards}))
 
 
-@api_blueprint.route('/board', methods=['POST'])
+@board_blueprint.route('/', methods=['POST'])
 def create_board():
+    """Create board"""
     data = request.get_json()
     board = Board(name=data['name'])
     board.save()
