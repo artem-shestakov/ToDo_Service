@@ -1,6 +1,11 @@
 """Standard response message from REST API server"""
 
-SUCCESS = {
+SUCCESS_200 = {
+    "http_code": 200,
+    'code': 'success'
+}
+
+SUCCESS_201 = {
     "http_code": 201,
     'code': 'success'
 }
@@ -9,6 +14,12 @@ BAD_REQUEST_400 = {
     "http_code": 400,
     "code": "badRequest",
     "message": "Bad request"
+}
+
+NOT_FOUND_404 = {
+    "http_code": 404,
+    "code": "notFound",
+    "message": "Not found"
 }
 
 MISSING_PARAMETERS_422 = {
