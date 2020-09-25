@@ -44,7 +44,6 @@ def get_user_by_id(user_id):
     """
     Getting user's info by ID
     :param user_id: User's ID
-    :return:
     """
     user = User.objects(id=user_id).get()
     boards = Board.objects(user=user).all()
@@ -62,7 +61,6 @@ def update_user(user_id):
     """
     Update user's attributes
     :param user_id: User's ID
-    :return:
     """
     data = request.get_json()
     if data:
@@ -82,6 +80,18 @@ def update_user(user_id):
             return response_with(response_code.MISSING_PARAMETERS_422, message='Check you JSON request')
     else:
         return response_with(response_code.BAD_REQUEST_400, message='Could not get JSON or JSON empty')
+
+
+@api_blueprint.route('/user/<user_id>', methods=['DELETE'])
+@exception
+def delete_user(user_id):
+    """
+    Delete user
+    :param user_id: User's ID
+    """
+    user = User.objects(id=user_id).get()
+    user.delete()
+    return response_with(response_code.SUCCESS_201)
 
 
 @api_blueprint.route('/board', methods=['GET'])
@@ -106,3 +116,17 @@ def create_board():
         board_schema = BoardSchema(only=['name'])
         board = board_schema.dump(board)
         return response_with(response_code.SUCCESS_201, value={'board': board})
+    else:
+        return response_with(response_code.BAD_REQUEST_400, message='Could not get JSON or JSON empty')
+
+
+@api_blueprint.route('/board/<board_id>', methods=['DELETE'])
+@exception
+def delete_board(board_id):
+    """
+    Delete user
+    :param board_id: The ID of board
+    """
+    board = Board.objects(id=board_id).get()
+    board.delete()
+    return response_with(response_code.SUCCESS_201)
