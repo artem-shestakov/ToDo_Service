@@ -9,6 +9,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     NAME = 'ToDo REST API server'
+    JWT_SECRET_KEY = 'your-secret-key'
 
 
 class DevConfig(Config):

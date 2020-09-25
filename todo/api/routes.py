@@ -29,6 +29,7 @@ def create_user():
     data = request.get_json()
     if data:
         user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'])
+        user.password = User.generate_password(data['password'])
         user.save()
         # Get this user information for response
         user_schema = UserSchema(only=['email', 'first_name', 'last_name'])
