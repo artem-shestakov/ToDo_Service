@@ -8,13 +8,13 @@ Schema.TYPE_MAPPING[ObjectId] = fields.String
 
 class Board(mongo.Document):
     """Board model"""
-    name = mongo.StringField(required=True)
+    title = mongo.StringField(required=True)
     user = mongo.ReferenceField(User)
 
 
 class BoardSchema(Schema):
     """Board marshmallow schema"""
     id = fields.String()
-    name = fields.String(required=True)
+    title = fields.String(required=True)
     user = fields.Mapping()
 

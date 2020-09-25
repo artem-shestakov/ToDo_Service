@@ -1,5 +1,8 @@
 from flask import Flask
 from flask_mongoengine import MongoEngine
+from todo.api.utils.response import response_with
+import todo.api.utils.response_code as response_code
+import logging
 
 # Init MongoDB object
 mongo = MongoEngine()
@@ -17,6 +20,16 @@ def create_app(config_object):
 
     app = Flask(__name__)
     app.config.from_object(config_object)
+
+    @app.errorhandler(404)
+    def not_found(e):
+        logging.error(e)
+        return response_with(response_code.NOT_FOUND_404)
+
+    @app.errorhandler(500)
+    def not_found(e):
+        logging.error(e)
+        return response_with(response_code.SERVER_ERROR_500)
 
     mongo.init_app(app)
 
