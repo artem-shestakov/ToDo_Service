@@ -11,6 +11,7 @@ def create_app(config_object):
 
     :param config_object: Configure object from config file
     """
+    from .api import create_module as api_create_module
     from .board import create_module as board_create_module
     from .auth import create_module as auth_create_module
 
@@ -20,7 +21,8 @@ def create_app(config_object):
     mongo.init_app(app)
 
     # Register Blueprints
-    auth_create_module(app)
+    api_create_module(app)
+    # auth_create_module(app)
     board_create_module(app)
 
     return app

@@ -1,6 +1,8 @@
 from flask import Blueprint, make_response, jsonify, request
 from todo.board.models import Board, BoardSchema
 from todo.auth.models import User, UserSchema
+from todo.utils.response import response_with
+import todo.utils.response_code as code
 
 board_blueprint = Blueprint(
     "board",
@@ -22,8 +24,9 @@ def get_all_boards():
 def create_board():
     """Create board"""
     data = request.get_json()
-    board = Board(name=data['name'])
+    user = User.objects(id=data['user_id']).get()
+    board = Board(name=data['name'], user=user)
     board.save()
     board_schema = BoardSchema(only=['name'])
     board = board_schema.dump(board)
-    return make_response(jsonify({'board': board}), 201)
+    return response_with(code.SUCCESS_201, value={'board': board})
