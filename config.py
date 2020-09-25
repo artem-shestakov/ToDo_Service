@@ -8,6 +8,7 @@ mongo_uri = os.getenv("MONGO_URI")
 class Config(object):
     DEBUG = False
     TESTING = False
+    SYSTEM_ROLES = ['user', 'administrator']
     NAME = 'ToDo REST API server'
     JWT_SECRET_KEY = 'your-secret-key'
 

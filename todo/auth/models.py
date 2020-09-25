@@ -1,10 +1,15 @@
-from .. import mongo
+from todo import mongo
 from marshmallow import Schema, fields
 from bson import ObjectId
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime
 
 Schema.TYPE_MAPPING[ObjectId] = fields.String
+
+
+class Role(mongo.Document):
+    """User's role"""
+    title = mongo.StringField(required=True, unique=True)
 
 
 class User(mongo.Document):
@@ -14,6 +19,7 @@ class User(mongo.Document):
     first_name = mongo.StringField(required=True)
     last_name = mongo.StringField(required=True)
     created = mongo.DateTimeField(default=datetime.now())
+    roles = mongo.ListField(mongo.ReferenceField(Role))
 
     @staticmethod
     def generate_password(password):
