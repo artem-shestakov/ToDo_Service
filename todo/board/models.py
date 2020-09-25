@@ -16,5 +16,5 @@ class BoardSchema(Schema):
     """Board marshmallow schema"""
     id = fields.String()
     name = fields.String(required=True)
-    user = fields.String(required=True)
+    user = fields.Mapping()
 

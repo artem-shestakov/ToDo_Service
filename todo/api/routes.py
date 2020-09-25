@@ -1,8 +1,9 @@
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request
 from todo.auth.models import User, UserSchema
-from todo.utils.response import response_with
-from todo.utils.decorators import exception
-import todo.utils.response_code as response_code
+from todo.board.models import Board, BoardSchema
+from todo.api.utils.response import response_with
+from todo.api.utils.decorators import exception
+import todo.api.utils.response_code as response_code
 
 api_blueprint = Blueprint(
     'api',
@@ -11,7 +12,7 @@ api_blueprint = Blueprint(
 )
 
 
-@api_blueprint.route('/user/all', methods=['GET'])
+@api_blueprint.route('/user', methods=['GET'])
 @exception
 def get_users():
     """Getting all users"""
@@ -21,7 +22,7 @@ def get_users():
     return response_with(response_code.SUCCESS_200, value={'users': users})
 
 
-@api_blueprint.route('/user/create', methods=['POST'])
+@api_blueprint.route('/user', methods=['POST'])
 @exception
 def create_user():
     """Create user by POST request"""
@@ -45,3 +46,27 @@ def get_user_by_id(user_id):
     user_schema = UserSchema(only=['email', 'first_name', 'last_name'])
     user = user_schema.dump(user)
     return response_with(response_code.SUCCESS_200, value={'user': user})
+
+
+@api_blueprint.route('/board', methods=['GET'])
+@exception
+def get_all_boards():
+    """Get all boards"""
+    boards = Board.objects.all()
+    board_schema = BoardSchema(many=True, only=['id', 'name', 'user'])
+    boards = board_schema.dump(boards)
+    return response_with(response_code.SUCCESS_200, value={'boards': boards})
+
+
+@api_blueprint.route('/board', methods=['POST'])
+@exception
+def create_board():
+    """Create board"""
+    data = request.get_json()
+    if data:
+        user = User.objects(id=data['user_id']).get()
+        board = Board(name=data['name'], user=user)
+        board.save()
+        board_schema = BoardSchema(only=['name'])
+        board = board_schema.dump(board)
+        return response_with(response_code.SUCCESS_201, value={'board': board})
