@@ -14,7 +14,10 @@ def response_with(response, headers={}, value=None, message=None):
     if value is not None:
         result.update(value)
     if response.get('message', None) is not None:
-        result.update({'message': response['message'] + f' {message}'})
+        if message:
+            result.update({'message': response['message'] + f'. {message}'})
+        else:
+            result.update({'message': response['message']})
     result.update({'code': response['code']})
     headers.update({'Access-Control-Allow-Origin': '*'})
     headers.update({'Server': current_app.config['NAME']})

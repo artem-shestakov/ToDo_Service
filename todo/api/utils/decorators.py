@@ -1,7 +1,7 @@
 from .response import response_with
 from functools import wraps
-from mongoengine.errors import ValidationError, DoesNotExist
-from pymongo.errors import ServerSelectionTimeoutError
+from mongoengine.errors import ValidationError, DoesNotExist, NotUniqueError
+from pymongo.errors import ServerSelectionTimeoutError, DuplicateKeyError
 import todo.api.utils.response_code as response_code
 
 
@@ -17,6 +17,10 @@ def exception(f):
             return response_with(response_code.BAD_REQUEST_400, message=err)
         except DoesNotExist as err:
             return response_with(response_code.NOT_FOUND_404, message=err)
+        except NotUniqueError as err:
+            return response_with(response_code.SERVER_ERROR_500, message=err)
+        except DuplicateKeyError as err:
+            return response_with(response_code.SERVER_ERROR_500, message=err)
         except ServerSelectionTimeoutError as err:
             return response_with(response_code.SERVER_ERROR_500, message=err)
     return wrapper_func

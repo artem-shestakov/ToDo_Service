@@ -25,7 +25,7 @@ NOT_FOUND_404 = {
 MISSING_PARAMETERS_422 = {
     "http_code": 422,
     "code": "missingParameter",
-    "message": "Missing parameters."
+    "message": "Missing parameters"
 }
 
 SERVER_ERROR_500 = {
