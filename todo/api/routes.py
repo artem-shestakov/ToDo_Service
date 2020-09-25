@@ -1,8 +1,9 @@
 from flask import Blueprint, request
-from todo.auth.models import User, UserSchema
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from todo.auth.models import User, UserSchema, Role
 from todo.board.models import Board, BoardSchema
 from todo.api.utils.response import response_with
-from todo.api.utils.decorators import exception
+from todo.api.utils.decorators import exception, has_role
 import todo.api.utils.response_code as response_code
 
 api_blueprint = Blueprint(
@@ -14,6 +15,8 @@ api_blueprint = Blueprint(
 
 @api_blueprint.route('/user', methods=['GET'])
 @exception
+@jwt_required
+@has_role(['administrator'])
 def get_users():
     """Getting all users"""
     users = User.objects.all()
@@ -28,7 +31,9 @@ def create_user():
     """Create user by POST request"""
     data = request.get_json()
     if data:
-        user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'])
+        user_role = Role.objects(title='user').get()
+        user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'], roles=[user_role])
+        user.password = User.generate_password(data['password'])
         user.save()
         # Get this user information for response
         user_schema = UserSchema(only=['email', 'first_name', 'last_name'])
@@ -96,10 +101,12 @@ def delete_user(user_id):
 
 @api_blueprint.route('/board', methods=['GET'])
 @exception
+@jwt_required
 def get_all_boards():
-    """Get all boards"""
-    boards = Board.objects.all()
-    board_schema = BoardSchema(many=True, only=['id', 'title', 'user'])
+    """Get all user's boards"""
+    user = User.objects(email=get_jwt_identity()).get()
+    boards = Board.objects(user=user).all()
+    board_schema = BoardSchema(many=True, only=['id', 'title'])
     boards = board_schema.dump(boards)
     return response_with(response_code.SUCCESS_200, value={'boards': boards})
 

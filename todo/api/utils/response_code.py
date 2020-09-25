@@ -16,6 +16,18 @@ BAD_REQUEST_400 = {
     "message": "Bad request"
 }
 
+UNAUTHORIZED_401 = {
+    "http_code": 401,
+    "code": "unauthorized",
+    "message": "Unauthoried"
+}
+
+FORBIDDEN_403 = {
+    "http_code": 403,
+    "code": "forbidden",
+    "message": "Forbidden"
+}
+
 NOT_FOUND_404 = {
     "http_code": 404,
     "code": "notFound",
