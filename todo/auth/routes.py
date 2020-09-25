@@ -22,7 +22,7 @@ def login():
             return response_with(response_code.UNAUTHORIZED_401, message='Invalid email or password')
         if user.verify_password(data['password'], user.password):
             access_token = create_access_token(identity=user.email)
-            return response_with(response_code.SUCCESS_201, value={'message': f'Logged in as {user.email}',
+            return response_with(response_code.SUCCESS_200, value={'message': f'Logged in as {user.email}',
                                                                    'access_token': access_token})
         else:
             return response_with(response_code.UNAUTHORIZED_401, message='Invalid email or password')

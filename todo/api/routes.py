@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from todo.auth.models import User, UserSchema
 from todo.board.models import Board, BoardSchema
 from todo.api.utils.response import response_with
@@ -14,6 +15,7 @@ api_blueprint = Blueprint(
 
 @api_blueprint.route('/user', methods=['GET'])
 @exception
+@jwt_required
 def get_users():
     """Getting all users"""
     users = User.objects.all()
@@ -97,10 +99,12 @@ def delete_user(user_id):
 
 @api_blueprint.route('/board', methods=['GET'])
 @exception
+@jwt_required
 def get_all_boards():
-    """Get all boards"""
-    boards = Board.objects.all()
-    board_schema = BoardSchema(many=True, only=['id', 'title', 'user'])
+    """Get all user's boards"""
+    user = User.objects(email=get_jwt_identity()).get()
+    boards = Board.objects(user=user).all()
+    board_schema = BoardSchema(many=True, only=['id', 'title'])
     boards = board_schema.dump(boards)
     return response_with(response_code.SUCCESS_200, value={'boards': boards})
 
