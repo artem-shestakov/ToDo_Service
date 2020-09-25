@@ -27,3 +27,9 @@ MISSING_PARAMETERS_422 = {
     "code": "missingParameter",
     "message": "Missing parameters."
 }
+
+SERVER_ERROR_500 = {
+    "http_code": 500,
+    "code": "serverError",
+    "message": "Server error"
+}
