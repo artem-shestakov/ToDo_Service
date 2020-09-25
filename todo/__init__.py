@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_mongoengine import MongoEngine
+from flask_jwt_extended import JWTManager
 from todo.api.utils.response import response_with
 import todo.api.utils.response_code as response_code
 import logging
@@ -21,6 +22,8 @@ def create_app(config_object):
     app = Flask(__name__)
     app.config.from_object(config_object)
 
+    jwt = JWTManager(app)
+
     @app.errorhandler(404)
     def not_found(e):
         logging.error(e)
@@ -35,7 +38,7 @@ def create_app(config_object):
 
     # Register Blueprints
     api_create_module(app)
-    # auth_create_module(app)
+    auth_create_module(app)
     board_create_module(app)
 
     return app
