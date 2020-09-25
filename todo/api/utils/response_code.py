@@ -22,6 +22,12 @@ UNAUTHORIZED_401 = {
     "message": "Unauthoried"
 }
 
+FORBIDDEN_403 = {
+    "http_code": 403,
+    "code": "forbidden",
+    "message": "Forbidden"
+}
+
 NOT_FOUND_404 = {
     "http_code": 404,
     "code": "notFound",

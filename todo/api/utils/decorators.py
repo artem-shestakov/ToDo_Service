@@ -1,8 +1,10 @@
 from .response import response_with
-from functools import wraps
+from functools import wraps, update_wrapper
 from mongoengine.errors import ValidationError, DoesNotExist, NotUniqueError, FieldDoesNotExist
 from pymongo.errors import ServerSelectionTimeoutError, DuplicateKeyError
 import todo.api.utils.response_code as response_code
+from todo.auth.models import User, Role
+from flask_jwt_extended import get_jwt_identity
 
 
 def exception(f):
@@ -28,3 +30,16 @@ def exception(f):
         except FieldDoesNotExist as err:
             return response_with(response_code.SERVER_ERROR_500, message=err)
     return wrapper_func
+
+
+def has_role(roles):
+    def wrapper(f):
+        def wrapper_func(*args, **kwargs):
+            user = User.objects(email=get_jwt_identity()).get()
+            for role in roles:
+                role = Role.objects(title=role).get()
+                if role in user.roles:
+                    return f(*args, **kwargs)
+            return response_with(response_code.FORBIDDEN_403, message='Access denied')
+        return update_wrapper(wrapper_func, f)
+    return wrapper
