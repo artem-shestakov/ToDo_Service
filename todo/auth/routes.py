@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_jwt_extended import create_access_token
-from .models import User, UserSchema
+from todo.users.models import User
 from todo.api.utils.decorators import exception
 from todo.api.utils.response import response_with
 import todo.api.utils.response_code as response_code

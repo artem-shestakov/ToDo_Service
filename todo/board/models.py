@@ -1,18 +1,10 @@
 from .. import mongo
 from marshmallow import Schema, fields
 from bson import ObjectId
-from todo.auth.models import User
+from todo.users.models import User
+from todo.lists.models import List
 
 Schema.TYPE_MAPPING[ObjectId] = fields.String
-
-
-class List(mongo.Document):
-    title = mongo.StringField(required=True)
-
-
-class ListSchema(Schema):
-    id = fields.String()
-    title = fields.String(required=True)
 
 
 class Board(mongo.Document):

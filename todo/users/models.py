@@ -19,6 +19,7 @@ class User(mongo.Document):
     first_name = mongo.StringField(required=True)
     last_name = mongo.StringField(required=True)
     created = mongo.DateTimeField(default=datetime.now())
+    is_verified = mongo.BooleanField(required=True, default=False)
     roles = mongo.ListField(mongo.ReferenceField(Role))
 
     @staticmethod
@@ -38,4 +39,5 @@ class UserSchema(Schema):
     email = fields.Email(required=True)
     first_name = fields.String(required=True)
     last_name = fields.String(required=True)
+    is_verified = fields.Boolean(required=True)
     created = fields.DateTime()
