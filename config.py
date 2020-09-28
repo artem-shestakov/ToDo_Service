@@ -11,6 +11,8 @@ class Config(object):
     SYSTEM_ROLES = ['user', 'administrator']
     NAME = 'ToDo REST API server'
     JWT_SECRET_KEY = 'your-secret-key'
+    SECRET_KEY = 'your_secret_key'
+    SECURITY_PASSWORD_SALT = 'your_security_password_salt'
 
 
 class DevConfig(Config):

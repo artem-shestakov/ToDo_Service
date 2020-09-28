@@ -1,7 +1,8 @@
 from flask import Blueprint, request
-from todo.api.utils.decorators import exception, has_role
-from todo.api.utils.response import response_with
-import todo.api.utils.response_code as response_code
+from todo.utils.decorators import exception, has_role
+from todo.utils.response import response_with
+from todo.utils.token import generate_verification_token, confirm_verification_token
+import todo.utils.response_code as response_code
 from flask_jwt_extended import jwt_required
 from .models import User, UserSchema, Role
 from todo.board.models import Board, BoardSchema
@@ -46,6 +47,7 @@ def create_user():
 
 @users_blueprint.route('/<user_id>', methods=['GET'])
 @exception
+@jwt_required
 def get_user_by_id(user_id):
     """
     Getting user's info by ID
@@ -63,6 +65,7 @@ def get_user_by_id(user_id):
 
 @users_blueprint.route('/<user_id>', methods=['PUT'])
 @exception
+@jwt_required
 def update_user(user_id):
     """
     Update user's attributes
@@ -90,6 +93,8 @@ def update_user(user_id):
 
 @users_blueprint.route('/<user_id>', methods=['DELETE'])
 @exception
+@jwt_required
+@has_role(['administrator'])
 def delete_user(user_id):
     """
     Delete user
@@ -98,3 +103,15 @@ def delete_user(user_id):
     user = User.objects(id=user_id).get()
     user.delete()
     return response_with(response_code.SUCCESS_201)
+
+
+@users_blueprint.route('/confirm/<verification_token>', methods=['GET'])
+@exception
+def user_verification(verification_token):
+    email = verification_token(verification_token)
+    user = User.objects(email=email).get()
+    if user.is_verified:
+        response_with(response_code.INVALID_INPUT_422)
+    else:
+        user.update(is_validate=True)
+        return response_with(response_code.SUCCESS_200, value={'message': 'Email verified, you can proceed login now'})

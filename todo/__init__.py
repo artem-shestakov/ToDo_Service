@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_mongoengine import MongoEngine
 from flask_jwt_extended import JWTManager
-from todo.api.utils.response import response_with
-import todo.api.utils.response_code as response_code
+from todo.utils.response import response_with
+import todo.utils.response_code as response_code
 import logging
 
 # Init MongoDB object

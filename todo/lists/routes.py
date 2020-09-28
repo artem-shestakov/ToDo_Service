@@ -2,9 +2,9 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 from todo.board.models import Board
 from .models import List, ListSchema
-from todo.api.utils.response import response_with
-from todo.api.utils.decorators import exception
-import todo.api.utils.response_code as response_code
+from todo.utils.response import response_with
+from todo.utils.decorators import exception
+import todo.utils.response_code as response_code
 
 lists_blueprint = Blueprint(
     'lists',
