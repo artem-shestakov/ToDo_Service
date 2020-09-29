@@ -1,7 +1,8 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, render_template_string, url_for
 from todo.utils.decorators import exception, has_role
 from todo.utils.response import response_with
 from todo.utils.token import generate_verification_token, confirm_verification_token
+from todo.utils.email import send_email
 import todo.utils.response_code as response_code
 from flask_jwt_extended import jwt_required
 from .models import User, UserSchema, Role
@@ -33,10 +34,19 @@ def create_user():
     """Create user by POST request"""
     data = request.get_json()
     if data:
-        user_role = Role.objects(title='user').get()
-        user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'], roles=[user_role])
-        user.password = User.generate_password(data['password'])
+        user_schema = UserSchema()
+        data['password'] = User.generate_password(data['password'])
+        user = user_schema.load(data)
+        role = Role.objects(title='user').get()
+        user.roles.append(role)
         user.save()
+        token = generate_verification_token(data['email'])
+        verification_email = url_for('users.user_verification', verification_token=token, _external=True)
+        html = render_template_string(
+            "<p>Welcome! Thanks for signing up. Please follow this link to activate your account:</p> <p><a href='{{ verification_email }}'>{{ verification_email }}</a></p> <br> <p>Thanks!</p>",
+            verification_email=verification_email)
+        subject = "Please Verify your email"
+        send_email(user.email, subject, html)
         # Get this user information for response
         user_schema = UserSchema()
         user = user_schema.dump(user)
@@ -108,10 +118,10 @@ def delete_user(user_id):
 @users_blueprint.route('/confirm/<verification_token>', methods=['GET'])
 @exception
 def user_verification(verification_token):
-    email = verification_token(verification_token)
+    email = confirm_verification_token(verification_token)
     user = User.objects(email=email).get()
     if user.is_verified:
         response_with(response_code.INVALID_INPUT_422)
     else:
-        user.update(is_validate=True)
+        user.update(is_verified=True)
         return response_with(response_code.SUCCESS_200, value={'message': 'Email verified, you can proceed login now'})

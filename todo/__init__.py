@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_mongoengine import MongoEngine
 from flask_jwt_extended import JWTManager
+from todo.utils.email import mail
 from todo.utils.response import response_with
 import todo.utils.response_code as response_code
 import logging
@@ -37,6 +38,7 @@ def create_app(config_object):
         return response_with(response_code.SERVER_ERROR_500)
 
     mongo.init_app(app)
+    mail.init_app(app)
 
     # Register Blueprints
     api_create_module(app)

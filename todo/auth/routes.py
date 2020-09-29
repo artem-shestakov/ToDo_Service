@@ -8,7 +8,8 @@ import todo.utils.response_code as response_code
 auth_blueprint = Blueprint(
     'auth',
     __name__,
-    url_prefix='/auth'
+    url_prefix='/auth',
+    template_folder='../templates/auth'
 )
 
 
