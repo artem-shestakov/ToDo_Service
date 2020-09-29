@@ -1,5 +1,5 @@
 import click
-from todo.auth.models import Role, User
+from todo.users.models import Role, User
 from flask.cli import AppGroup
 
 

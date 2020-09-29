@@ -34,6 +34,12 @@ NOT_FOUND_404 = {
     "message": "Not found"
 }
 
+INVALID_INPUT_422 = {
+    "http_code": 422,
+    "code": "invalidInput",
+    "message": "Invalid input"
+}
+
 MISSING_PARAMETERS_422 = {
     "http_code": 422,
     "code": "missingParameter",
