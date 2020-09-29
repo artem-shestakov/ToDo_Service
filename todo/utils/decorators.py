@@ -2,8 +2,8 @@ from .response import response_with
 from functools import wraps, update_wrapper
 from mongoengine.errors import ValidationError, DoesNotExist, NotUniqueError, FieldDoesNotExist
 from pymongo.errors import ServerSelectionTimeoutError, DuplicateKeyError
-import todo.api.utils.response_code as response_code
-from todo.auth.models import User, Role
+import todo.utils.response_code as response_code
+from todo.users.models import User, Role
 from flask_jwt_extended import get_jwt_identity
 
 
