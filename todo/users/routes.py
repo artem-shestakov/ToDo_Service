@@ -7,6 +7,7 @@ import todo.utils.response_code as response_code
 from flask_jwt_extended import jwt_required
 from .models import User, UserSchema, Role
 from todo.board.models import Board, BoardSchema
+import base64
 
 # Users API Blueprint
 users_blueprint = Blueprint(
@@ -42,7 +43,8 @@ def create_user():
         user.roles.append(role)
         user.save()
         token = generate_verification_token(data['email'])
-        html = render_template('email_confirmation.html')
+        logo = base64.b64encode(open("./todo/static/images/logo.png", "rb").read()).decode()
+        html = render_template('email_confirmation.html', logo=logo, token=token)
         subject = "Please Verify your email"
         send_email(user.email, subject, html)
         # Get this user information for response

@@ -8,8 +8,10 @@
     <title>Email confirmation</title>
 </head>
 <body>
-    <div style="width: 100%; background-color: #d9d9d9">
-        <p style="text-align: center">LOGO</p>
+    <div style="width: 100%; background-color: #cadafc; padding: 10px 0px">
+        <a href="#">
+                <img src="data:image/png;base64,{{ logo }}" alt="Logo" style="display: block; margin: 0 auto;">
+            </a>
     </div>
     <div style="width: 600px; margin: 0 auto; padding: 20px">
         <h1 style="text-align: center; margin: 10px; color: #000000">Welcome</h1>
@@ -17,7 +19,7 @@
         <table style="margin-left: auto; margin-right: auto">
             <tbody>
                 <tr>
-                    <td style="background-color: #00a6ff; border-radius: 4px; font-size: 20px; font-weight: bold; line-height: 25px">
+                    <td style="background-color: #9ac0f9; border-radius: 4px; font-size: 20px; font-weight: bold; line-height: 25px">
                         <a href="{{ url_for('users.user_verification', verification_token=token, _external=True) }}" style="display: block; color: #ffffff; text-decoration: none; padding: 12px 24px">Confirm email</a>
                     </td>
                 </tr>
