@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Email confirmation</title>
+</head>
+<body>
+    <div style="width: 100%; background-color: #d9d9d9">
+        <p style="text-align: center">LOGO</p>
+    </div>
+    <div style="width: 600px; margin: 0 auto; padding: 20px">
+        <h1 style="text-align: center; margin: 10px; color: #000000">Welcome</h1>
+        <p style="text-align: center; margin: 10px; color: #000000; font-size: 20px">Thanks for signing up. Please follow this link to activate your account</p>
+        <table style="margin-left: auto; margin-right: auto">
+            <tbody>
+                <tr>
+                    <td style="background-color: #00a6ff; border-radius: 4px; font-size: 20px; font-weight: bold; line-height: 25px">
+                        <a href="{{ url_for('users.user_verification', verification_token=token, _external=True) }}" style="display: block; color: #ffffff; text-decoration: none; padding: 12px 24px">Confirm email</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
