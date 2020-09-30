@@ -4,10 +4,17 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
 
+# Init Flask-Mail object
 mail = Mail()
 
 
 def send_email(to, subject, template):
+    """
+    Send email
+    :param to: Email recipient
+    :param subject: The subject of email
+    :param template: Email html template
+    """
     msg = Message(
         subject=subject,
         recipients=[to],
