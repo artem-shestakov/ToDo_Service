@@ -33,7 +33,7 @@ def get_users():
 @users_blueprint.route('/', methods=['POST'])
 @exception
 def create_user():
-    """Create user by POST request"""
+    """Create user by POST request and send email confirmation"""
     data = request.get_json()
     if data:
         user_schema = UserSchema()
@@ -42,11 +42,14 @@ def create_user():
         role = Role.objects(title='user').get()
         user.roles.append(role)
         user.save()
+
+        # Generate email confirmation token and sent it to user
         token = generate_verification_token(data['email'])
         logo = base64.b64encode(open("./todo/static/images/logo.png", "rb").read()).decode()
         html = render_template('email_confirmation.html', logo=logo, token=token)
         subject = "Please Verify your email"
         send_email(user.email, subject, html)
+
         # Get this user information for response
         user_schema = UserSchema(exclude=['password'])
         user = user_schema.dump(user)

@@ -1,5 +1,9 @@
 # ToDo_Service
 
+## Capabilities
+### Email confirmation
+![Email_confirmation](readme_files/email_confirmation.png)
+
 ## Init Database
 For create user use file init-mongo.js in db directory. Example:
 ```javascript
