@@ -1,14 +1,10 @@
-from flask_mail import Message, Mail
+from flask_mail import Message
 from flask import current_app
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-import smtplib
-
-# Init Flask-Mail object
-mail = Mail()
+from todo import celery, mail
 
 
-def send_email(to, subject, template):
+@celery.task(bind=True, ignore_result=True, default_retry_dalay=300, max_retries=5)
+def send_email(self, to, subject, template):
     """
     Send email
     :param to: Email recipient
@@ -21,19 +17,7 @@ def send_email(to, subject, template):
         html=template,
         sender=current_app.config['MAIL_DEFAULT_SENDER']
     )
-    mail.send(msg)
-
-
-# def send_email(to, subject, template):
-#     msg = MIMEMultipart("alternative")
-#     msg.attach(MIMEText(template, "html"))
-#     msg["Subject"] = subject
-#
-#     msg["From"] = "ToDo"
-#     msg["To"] = to
-#
-#     smtp_server = smtplib.SMTP(current_app.config['MAIL_SERVER'], 587)
-#     smtp_server.starttls()
-#     smtp_server.login(current_app.config['MAIL_USERNAME'], current_app.config['MAIL_PASSWORD'])
-#     smtp_server.sendmail("", [to], msg.as_string())
-#     smtp_server.close()
+    try:
+        mail.send(msg)
+    except Exception as e:
+        self.retry(exc=e)

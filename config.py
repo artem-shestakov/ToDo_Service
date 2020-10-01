@@ -5,6 +5,8 @@ load_dotenv()
 mongo_uri = os.getenv("MONGO_URI")
 email = os.getenv('EMAIL')
 email_password = os.getenv('EMAIL_PASSWORD')
+rabbitmq_user = os.getenv("RABBITMQ_DEFAULT_USER")
+rabbitmq_user_password = os.getenv("RABBITMQ_DEFAULT_PASS")
 
 
 class Config(object):
@@ -12,6 +14,7 @@ class Config(object):
     TESTING = False
     SYSTEM_ROLES = ['user', 'administrator']
     NAME = 'ToDo REST API server'
+    TIMEZONE = 'Europe/Moscow'
     JWT_SECRET_KEY = 'your-secret-key'
     SECRET_KEY = 'your_secret_key'
     SECURITY_PASSWORD_SALT = 'your_security_password_salt'
@@ -22,6 +25,9 @@ class Config(object):
     MAIL_PASSWORD = email_password
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
+    CELERY_BROKER_URL = f"amqp://{rabbitmq_user}:{rabbitmq_user_password}@127.0.0.1//"
+    CELERY_RESULT_BACKEND = f"amqp://{rabbitmq_user}:{rabbitmq_user_password}@127.0.0.1//"
+    CELERY_IMPORTS = ["todo.utils.email"]
 
 
 class DevConfig(Config):
