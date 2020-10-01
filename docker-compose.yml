@@ -15,5 +15,16 @@ services:
     - type: bind
       source: ./db/init-mongo.js
       target: /docker-entrypoint-initdb.d/init-mongo.js
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    env_file:
+      - .env
+
 volumes:
   db_todo:

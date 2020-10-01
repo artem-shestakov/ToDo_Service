@@ -1,13 +1,34 @@
 from flask import Flask
 from flask_mongoengine import MongoEngine
 from flask_jwt_extended import JWTManager
-from todo.utils.email import mail
+from flask_mail import Mail
 from todo.utils.response import response_with
 import todo.utils.response_code as response_code
+# from celery import Celery
+from flask_celery import Celery as Celery_app
 import logging
 
 # Init MongoDB object
 mongo = MongoEngine()
+celery_app = Celery_app()
+mail = Mail()
+
+
+# def make_celery(app):
+#     celery = Celery(
+#         app.import_name,
+#         backend=app.config['CELERY_RESULT_BACKEND'],
+#         broker=app.config['CELERY_BROKER_URL']
+#     )
+#     celery.conf.update(app.config)
+#
+#     class ContextTask(celery.Task):
+#         def __call__(self, *args, **kwargs):
+#             with app.app_context():
+#                 return self.run(*args, **kwargs)
+#
+#     celery.Task = ContextTask
+#     return celery
 
 
 def create_app(config_object):
@@ -39,6 +60,7 @@ def create_app(config_object):
 
     mongo.init_app(app)
     mail.init_app(app)
+    celery_app.init_app(app)
 
     # Register Blueprints
     api_create_module(app)
