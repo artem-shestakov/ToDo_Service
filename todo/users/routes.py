@@ -48,7 +48,7 @@ def create_user():
         logo = base64.b64encode(open("./todo/static/images/logo.png", "rb").read()).decode()
         html = render_template('email_confirmation.html', logo=logo, token=token)
         subject = "Please Verify your email"
-        send_email(user.email, subject, html)
+        send_email.apply_async(args=(user.email, subject, html))
 
         # Get this user information for response
         user_schema = UserSchema(exclude=['password'])
