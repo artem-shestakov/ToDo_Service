@@ -1,9 +1,9 @@
 from flask_mail import Message
 from flask import current_app
-from todo import celery_app, mail
+from todo import celery, mail
 
 
-@celery_app.task(bind=True, ignore_result=True, default_retry_dalay=300, max_retries=5)
+@celery.task(bind=True, ignore_result=True, default_retry_dalay=300, max_retries=5)
 def send_email(self, to, subject, template):
     """
     Send email
