@@ -47,7 +47,7 @@ def create_user():
         token = generate_verification_token(data['email'])
         logo = base64.b64encode(open("./todo/static/images/logo.png", "rb").read()).decode()
         html = render_template('email_confirmation.html', logo=logo, token=token)
-        subject = "Please Verify your email"
+        subject = "Please verify your email"
         send_email.apply_async(args=(user.email, subject, html))
 
         # Get this user information for response
