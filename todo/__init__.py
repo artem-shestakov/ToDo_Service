@@ -46,6 +46,7 @@ def create_app(config_object):
     from .board import create_module as board_create_module
     from .lists import create_module as lists_create_module
     from .auth import create_module as auth_create_module
+    from .utils import create_module as utils_create_module
 
     app = Flask(__name__)
     app.config.from_object(config_object)
@@ -71,5 +72,6 @@ def create_app(config_object):
     auth_create_module(app)
     board_create_module(app)
     lists_create_module(app)
+    utils_create_module(app)
 
     return app
