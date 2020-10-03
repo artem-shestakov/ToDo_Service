@@ -1,13 +1,16 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, url_for, current_app, send_from_directory
+from werkzeug.utils import secure_filename
 from todo.utils.decorators import exception, has_role
 from todo.utils.response import response_with
 from todo.utils.token import generate_verification_token, confirm_verification_token
 from todo.utils.email import send_email
+from todo.utils.upload import allowed_file
 import todo.utils.response_code as response_code
 from flask_jwt_extended import jwt_required
 from .models import User, UserSchema, Role
 from todo.board.models import Board, BoardSchema
 import base64
+import os
 
 # Users API Blueprint
 users_blueprint = Blueprint(
@@ -128,3 +131,25 @@ def user_verification(verification_token):
     else:
         user.update(is_verified=True)
         return response_with(response_code.SUCCESS_200, value={'message': 'Email verified, you can proceed login now'})
+
+
+@users_blueprint.route('/<user_id>/avatar', methods=['POST'])
+@exception
+@jwt_required
+def set_user_avatar(user_id):
+    file = request.files['avatar']
+    user = User.objects(id=user_id).get()
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}{user.id}{filename}")
+        user.avatar = url_for('.uploaded_file', user_id=user.id, filename=filename, _external=True)
+        user.save()
+        user_schema = UserSchema()
+        user = user_schema.dump(user)
+        return response_with(response_code.SUCCESS_201, value={'user': user})
+
+
+@users_blueprint.route('/<user_id>/avatar/<filename>', methods=['GET'])
+def uploaded_file(filename, user_id):
+    print(current_app.root_path)
+    return send_from_directory(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}", f'{user_id}{filename}')
