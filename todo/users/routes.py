@@ -28,7 +28,7 @@ users_blueprint = Blueprint(
 def get_users():
     """Getting all users"""
     users = User.objects.all()
-    users_schema = UserSchema(many=True, only=['id', 'email', 'first_name', 'last_name', 'created'])
+    users_schema = UserSchema(many=True, exclude=['password'])
     users = users_schema.dump(users)
     return response_with(response_code.SUCCESS_200, value={'users': users})
 
@@ -67,6 +67,7 @@ def create_user():
 def get_user_by_id(user_id):
     """
     Getting user's info by ID
+
     :param user_id: User's ID
     """
     user = User.objects(id=user_id).get()
@@ -85,6 +86,7 @@ def get_user_by_id(user_id):
 def update_user(user_id):
     """
     Update user's attributes
+
     :param user_id: User's ID
     """
     data = request.get_json()
@@ -114,6 +116,7 @@ def update_user(user_id):
 def delete_user(user_id):
     """
     Delete user
+
     :param user_id: User's ID
     """
     user = User.objects(id=user_id).get()
@@ -124,6 +127,11 @@ def delete_user(user_id):
 @users_blueprint.route('/confirm/<verification_token>', methods=['GET'])
 @exception
 def user_verification(verification_token):
+    """
+    Verify user's email
+
+    :param verification_token: Token for confirmation email
+    """
     email = confirm_verification_token(verification_token)
     user = User.objects(email=email).get()
     if user.is_verified:
@@ -137,19 +145,35 @@ def user_verification(verification_token):
 @exception
 @jwt_required
 def set_user_avatar(user_id):
+    """
+    Upload user's avatar
+
+    :param user_id: User ID
+    """
     file = request.files['avatar']
     user = User.objects(id=user_id).get()
     if file:
         filename = secure_filename(file.filename)
-        file.save(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}{user.id}{filename}")
-        user.avatar = url_for('.uploaded_file', user_id=user.id, filename=filename, _external=True)
+        filename = str(user.id) + os.path.splitext(filename)[1]
+        file.save(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}{filename}")
+        user.avatar = filename
         user.save()
         user_schema = UserSchema()
         user = user_schema.dump(user)
         return response_with(response_code.SUCCESS_201, value={'user': user})
 
 
-@users_blueprint.route('/<user_id>/avatar/<filename>', methods=['GET'])
-def uploaded_file(filename, user_id):
-    print(current_app.root_path)
-    return send_from_directory(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}", f'{user_id}{filename}')
+@users_blueprint.route('/<user_id>/avatar', methods=['GET'])
+@exception
+def uploaded_file(user_id):
+    """
+    Getting user's avatar
+
+    :param user_id: User ID
+    :return: Avatar image
+    """
+    user = User.objects(id=user_id).get()
+    if user.avatar:
+        return send_from_directory(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}", user.avatar)
+    else:
+        return response_with(response_code.NOT_FOUND_404)

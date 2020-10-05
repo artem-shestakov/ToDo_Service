@@ -18,7 +18,7 @@ class User(mongo.Document):
     password = mongo.StringField(required=True)
     first_name = mongo.StringField(required=True)
     last_name = mongo.StringField(required=True)
-    avatar = mongo.StringField()
+    avatar = mongo.StringField(default=None)
     created = mongo.DateTimeField(default=datetime.now())
     is_verified = mongo.BooleanField(required=True, default=False)
     roles = mongo.ListField(mongo.ReferenceField(Role))
