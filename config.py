@@ -18,7 +18,7 @@ class Config(object):
     JWT_SECRET_KEY = 'your-secret-key'
     SECRET_KEY = 'your_secret_key'
     SECURITY_PASSWORD_SALT = 'your_security_password_salt'
-    UPLOAD_FOLDER = '/upload/images/'
+    UPLOAD_FOLDER = '/static/avatars/'
     MAIL_DEFAULT_SENDER = email
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
