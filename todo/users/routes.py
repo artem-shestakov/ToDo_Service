@@ -152,15 +152,18 @@ def set_user_avatar(user_id):
     """
     file = request.files['avatar']
     user = User.objects(id=user_id).get()
-    if file:
+    if file and allowed_file(file):
         filename = secure_filename(file.filename)
         filename = str(user.id) + os.path.splitext(filename)[1]
         file.save(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}{filename}")
         user.avatar = filename
         user.save()
-        user_schema = UserSchema()
+        user_schema = UserSchema(exclude=['password'])
         user = user_schema.dump(user)
         return response_with(response_code.SUCCESS_201, value={'user': user})
+    else:
+        return response_with(response_code.INVALID_INPUT_422,
+                             message='No image in request or image format is not accepted')
 
 
 @users_blueprint.route('/<user_id>/avatar', methods=['GET'])

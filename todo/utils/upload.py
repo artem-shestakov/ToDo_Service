@@ -1,12 +1,11 @@
-import filetype
-
-allowed_extension = set(['image/jpeg', 'image/png', 'jpeg'])
+ALLOWED_EXTENSIONS = set(['image/jpeg', 'image/png'])
 
 
-def allowed_file(filename):
+def allowed_file(file):
     """
     Verify file before upload
-    :param filename: Uploading file
+
+    :param file: Uploading file
     :return: Boolean
     """
-    return filetype in allowed_extension
+    return '.' in file.filename and file.mimetype in ALLOWED_EXTENSIONS
