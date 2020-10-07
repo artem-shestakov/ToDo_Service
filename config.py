@@ -18,6 +18,7 @@ class Config(object):
     JWT_SECRET_KEY = 'your-secret-key'
     SECRET_KEY = 'your_secret_key'
     SECURITY_PASSWORD_SALT = 'your_security_password_salt'
+    UPLOAD_FOLDER = '/static/avatars/'
     MAIL_DEFAULT_SENDER = email
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
@@ -26,7 +27,7 @@ class Config(object):
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
     CELERY_BROKER_URL = f"amqp://{rabbitmq_user}:{rabbitmq_user_password}@127.0.0.1//"
-    CELERY_RESULT_BACKEND = f"amqp://{rabbitmq_user}:{rabbitmq_user_password}@127.0.0.1//"
+    CELERY_RESULT_BACKEND = f"rpc://{rabbitmq_user}:{rabbitmq_user_password}@127.0.0.1//"
     CELERY_IMPORTS = ["todo.utils.email"]
 
 

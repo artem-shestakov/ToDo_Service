@@ -29,6 +29,8 @@ def exception(f):
             return response_with(response_code.SERVER_ERROR_500, message=err)
         except FieldDoesNotExist as err:
             return response_with(response_code.SERVER_ERROR_500, message=err)
+        except FileNotFoundError as err:
+            return response_with(response_code.SERVER_ERROR_500, message=err)
     return wrapper_func
 
 

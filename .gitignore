@@ -11,3 +11,5 @@ venv
 .env
 db/init-mongo.js
 
+#Images for tests
+todo/static/avatars/*
