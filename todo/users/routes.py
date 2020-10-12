@@ -72,7 +72,7 @@ def get_user_by_id(user_id):
     """
     user = User.objects(id=user_id).get()
     boards = Board.objects(user=user).all()
-    user_schema = UserSchema()
+    user_schema = UserSchema(exclude=['password'])
     user = user_schema.dump(user)
     board_schema = BoardSchema(many=True, only=['id', 'title'])
     boards = board_schema.dump(boards)
@@ -100,7 +100,7 @@ def update_user(user_id):
             if data.get('last_name'):
                 user.update(last_name=data['last_name'])
             user = User.objects(id=user_id).get()
-            user_schema = UserSchema()
+            user_schema = UserSchema(exclude=['password'])
             user = user_schema.dump(user)
             return response_with(response_code.SUCCESS_201, value={'user': user})
         else:
