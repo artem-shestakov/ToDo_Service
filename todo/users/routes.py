@@ -106,7 +106,7 @@ def update_user(user_id):
         else:
             return response_with(response_code.MISSING_PARAMETERS_422, message='Check you JSON request')
     else:
-        return response_with(response_code.BAD_REQUEST_400, message='Could not get JSON or JSON empty')
+        return response_with(response_code.MISSING_PARAMETERS_422, message='Could not get JSON or JSON empty')
 
 
 @users_blueprint.route('/<user_id>', methods=['DELETE'])

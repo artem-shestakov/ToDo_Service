@@ -10,11 +10,6 @@
       "url": "http://localhost:5000"
     }
   ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "tags": [
     {
       "name": "Authentication",
@@ -46,10 +41,9 @@
                   }
                 }
               },
-              "examples": {
-                "0": {
-                  "value": "{\n    \"email\": \"user@usermail.net\",\n    \"password\": \"password\"\n}"
-                }
+              "example": {
+                "email": "artem.s.shestakov@yandex.ru",
+                "password": "password"
               }
             }
           }
@@ -73,15 +67,15 @@
                     }
                   }
                 },
-                "examples": {
-                  "0": {
-                    "value": "{\n  \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDI0OTU1NTMsIm5iZiI6MTYwMjQ5NTU1MywianRpIjoiYTNjZGE0ZDUtZGJkYi00YzM3LWFiZmEtMTVjZGMxMjljYjdhIiwiZXhwIjoxNjAyNDk2NDUzLCJpZGVudGl0eSI6ImFydGVtLnMuc2hlc3Rha292QHlhbmRleC5ydSIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.6pLYdWhamC1OKICPAfpbKPg1XOcr0iqdFuOhfQxMi9g\", \n  \"code\": \"200\", \n  \"message\": \"Logged in as user@usermail.net\"\n}\n"
-                  }
+                "example": {
+                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDI0OTU1NTMsIm5iZiI6MTYwMjQ5NTU1MywianRpIjoiYTNjZGE0ZDUtZGJkYi00YzM3LWFiZmEtMTVjZGMxMjljYjdhIiwiZXhwIjoxNjAyNDk2NDUzLCJpZGVudGl0eSI6ImFydGVtLnMuc2hlc3Rha292QHlhbmRleC5ydSIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.6pLYdWhamC1OKICPAfpbKPg1XOcr0iqdFuOhfQxMi9g",
+                  "type": "success",
+                  "message": "Logged in as artem.s.shestakov@yandex.ru"
                 }
               }
             }
           },
-          "401": {
+          "4XX": {
             "description": "Invalid email or password",
             "content": {
               "application/json": {
@@ -89,55 +83,21 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
-                  "0": {
+                  "401": {
                     "value": "{\n  \"code\": \"unauthoried\",\n  \"message\": \"Unauthoried. Invalid email or password\"\n}\n"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User matching query does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "0": {
+                  },
+                  "404": {
                     "value": "{\n  \"code\": \"notFound\",\n  \"message\": \"Not found. User matching query does not exist\"\n}\n"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Could not get JSON or JSON empty",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "examples": {
-                  "0": {
+                  },
+                  "422": {
                     "value": "{\n  \"code\": \"missingParameter\",\n  \"message\": \"Missing parameters. Could not get JSON or JSON empty\"\n}\n"
                   }
                 }
               }
             }
           }
-        },
-        "servers": [
-          {
-            "url": "http://localhost:5000"
-          }
-        ]
-      },
-      "servers": [
-        {
-          "url": "http://localhost:5000"
         }
-      ]
+      }
     },
     "/api/users/": {
       "get": {
@@ -187,16 +147,34 @@
                     }
                   }
                 },
-                "examples": {
-                  "0": {
-                    "value": "{\n  \"code\": \"success\",\n  \"users\": [\n    {\n        \"avatar\": \"5f6e05a7a550b763b47fdc2a.png\",\n        \"created\": \"2020-09-25T17:54:56.940000\",\n        \"email\": \"user01@mail.com\",\n        \"first_name\": \"Martin\",\n        \"id\": \"5f6e05a7a550b763b47fdc2a\",\n        \"is_verified\": true,\n        \"last_name\": \"Pop\"\n    },\n    {\n        \"avatar\": null,\n        \"created\": \"2020-09-25T17:54:56.940000\",\n        \"email\": \"max@mail.com\",\n        \"first_name\": \"Max\",\n        \"id\": \"4aae05a4a550b743b47fdcc2\",\n        \"is_verified\": false,\n        \"last_name\": \"Fly\"\n    }]\n}\n"
-                  }
+                "example": {
+                  "code": "success",
+                  "users": [
+                    {
+                      "avatar": "5f6e05a7a550b763b47fdc2a.png",
+                      "created": "2020-09-25T17:54:56.940000",
+                      "email": "artem.s.shestakov@yandex.ru",
+                      "first_name": "Artem",
+                      "id": "5f6e05a7a550b763b47fdc2a",
+                      "is_verified": true,
+                      "last_name": "Shestakov"
+                    },
+                    {
+                      "avatar": null,
+                      "created": "2020-10-25T07:20:15.940000",
+                      "email": "Marty@mail.com",
+                      "first_name": "Marty",
+                      "id": "4aae05a4a550b743b47fdcc2",
+                      "is_verified": false,
+                      "last_name": "Fly"
+                    }
+                  ]
                 }
               }
             }
           },
-          "401": {
-            "description": "Missing Authorization Header",
+          "4XX": {
+            "description": "Errors with request",
             "content": {
               "application/json": {
                 "schema": {
@@ -208,54 +186,25 @@
                   }
                 },
                 "examples": {
-                  "0": {
+                  "401": {
                     "value": "{\n  \"msg\": \"Missing Authorization Header\"\n}\n"
-                  }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Token has expired, need update token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "msg": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "examples": {
-                  "0": {
+                  },
+                  "403": {
                     "value": "{\n  \"msg\": \"Token has expired\"\n}\n"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Signature verification failed. Invalid token(with error)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "msg": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "examples": {
-                  "0": {
+                  },
+                  "422": {
                     "value": "{\n  \"msg\": \"Signature verification failed\"\n}\n"
                   }
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -268,7 +217,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "password": {
+                  "email": {
                     "type": "string"
                   },
                   "last_name": {
@@ -277,15 +226,16 @@
                   "first_name": {
                     "type": "string"
                   },
-                  "email": {
+                  "password": {
                     "type": "string"
                   }
                 }
               },
-              "examples": {
-                "0": {
-                  "value": "{\n    \"email\": \"artem.s.shestakov@yandex.ru\",\n    \"password\": \"password\",\n    \"first_name\": \"Artem\",\n    \"last_name\": \"Shestakov\"\n}"
-                }
+              "example": {
+                "email": "artem.s.shestakov@yandex.ru",
+                "password": "password",
+                "first_name": "Artem",
+                "last_name": "Shestakov"
               }
             }
           }
@@ -296,71 +246,18 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/Success_User_Response"
                 },
-                "examples": {
-                  "0": {
-                    "value": "{\n  \"code\": \"success\", \n  \"user\": {\n    \"avatar\": null, \n    \"created\": \"2020-10-12T12:38:58.064930\", \n    \"email\": \"artem.s.shestakov@gmail.com\", \n    \"first_name\": \"Artem\", \n    \"id\": \"5f8424e7dfce5c612fe35c9c\", \n    \"is_verified\": false, \n    \"last_name\": \"Shestakov\"\n  }\n}\n"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing Authorization Header",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "msg": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "examples": {
-                  "0": {
-                    "value": "{\n  \"msg\": \"Missing Authorization Header\"\n}\n"
-                  }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Token has expired, need update token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "msg": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "examples": {
-                  "0": {
-                    "value": "{\n  \"msg\": \"Token has expired\"\n}\n"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Signature verification failed. Invalid token(with error)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "msg": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "examples": {
-                  "0": {
-                    "value": "{\n  \"msg\": \"Signature verification failed\"\n}\n"
+                "example": {
+                  "type": "success",
+                  "user": {
+                    "avatar": null,
+                    "created": "2020-10-14T23:43:27.129022",
+                    "email": "artem.s.shestakov@yandex.ru.ru",
+                    "first_name": "Artem",
+                    "id": "5f8766eea6ab67384072db02",
+                    "is_verified": true,
+                    "last_name": "Shestakov"
                   }
                 }
               }
@@ -373,15 +270,45 @@
                 "schema": {
                   "$ref": "#/components/schemas/Error"
                 },
+                "example": {
+                  "code": "serverError",
+                  "message": "Server error. Tried to save duplicate unique keys (E11000 duplicate key error collection: todo.user index: email_1 dup key: { email: \"artem.s.shestakov@yandex.ru\" }, full error: {'index': 0, 'code': 11000, 'keyPattern': {'email': 1}, 'keyValue': {'email': 'artem.s.shestakov@yandex.ru'}, 'errmsg': 'E11000 duplicate key error collection: todo.user index: email_1 dup key: { email: \"artem.s.shestakov@yandex.ru\" }'})"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Errors with request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string"
+                    }
+                  }
+                },
                 "examples": {
-                  "0": {
-                    "value": "{\n  \"code\": \"serverError\", \n  \"message\": \"Server error. Tried to save duplicate unique keys (E11000 duplicate key error collection: todo.user index: email_1 dup key: { email: \\\"artem.s.shestakov@yandex.ru\\\" }, full error: {'index': 0, 'code': 11000, 'keyPattern': {'email': 1}, 'keyValue': {'email': 'artem.s.shestakov@yandex.ru'}, 'errmsg': 'E11000 duplicate key error collection: todo.user index: email_1 dup key: { email: \\\"artem.s.shestakov@yandex.ru\\\" }'})\"\n}\n"
+                  "401": {
+                    "value": "{\n  msg: \"Missing Authorization Header\"\n}\n"
+                  },
+                  "403": {
+                    "value": "{\n  msg: \"Token has expired\"\n}\n"
+                  },
+                  "422": {
+                    "value": "{\n  msg: \"Signature verification failed\"\n}\n"
                   }
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/users/{user_id}": {
@@ -411,6 +338,32 @@
                 "properties": {
                   "email": {
                     "type": "string"
+                  },
+                  "first_name": {
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "all": {
+                  "value": {
+                    "email": "artem.s.shestakov@yandex.ru",
+                    "first_name": "Artem",
+                    "last_name": "Shestakov"
+                  }
+                },
+                "email and first name": {
+                  "value": {
+                    "email": "artem.s.shestakov@yandex.ru",
+                    "first_name": "Artem"
+                  }
+                },
+                "last name": {
+                  "value": {
+                    "last_name": "Shestakov"
                   }
                 }
               }
@@ -418,7 +371,29 @@
           }
         },
         "responses": {
-          "400": {
+          "201": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_User_Response"
+                },
+                "example": {
+                  "type": "success",
+                  "user": {
+                    "avatar": null,
+                    "created": "2020-10-14T23:43:27.129022",
+                    "email": "artem.s.shestakov@yandex.ru.ru",
+                    "first_name": "Artem",
+                    "id": "5f8766eea6ab67384072db02",
+                    "is_verified": true,
+                    "last_name": "Shestakov"
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
             "description": "Invalid user ID",
             "content": {
               "application/json": {
@@ -426,14 +401,25 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "examples": {
-                  "0": {
+                  "400": {
                     "value": "{\n  \"message\": \"Bad request. '5f6e05a7a550b763b47fdc2addd1542e947e9' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "404": {
+                    "value": "{\n  \"message\": \"Not found. User matching query does not exist.\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "422": {
+                    "value": "{\n  \"message\": \"Missing parameters. Could not get JSON or JSON empty\",\n  \"type\": \"missingParameter\"\n}\n"
                   }
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     }
   },
@@ -449,28 +435,36 @@
           }
         }
       },
-      "User": {
+      "Success_User_Response": {
         "properties": {
-          "id": {
+          "type": {
             "type": "string"
           },
-          "avatar": {
-            "type": "string"
-          },
-          "created": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "first_name": {
-            "type": "string"
-          },
-          "last_name": {
-            "type": "string"
-          },
-          "is_verified": {
-            "type": "boolean"
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "avatar": {
+                "type": "string"
+              },
+              "created": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "first_name": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              },
+              "is_verified": {
+                "type": "boolean"
+              }
+            }
           }
         }
       }
