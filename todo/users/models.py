@@ -36,6 +36,8 @@ class User(mongo.Document):
 
 class UserSchema(Schema):
     """User marshmallow schema"""
+    class Meta:
+        ordered = True
     id = fields.String()
     email = fields.Email(required=True)
     password = fields.String(required=True)
