@@ -147,17 +147,14 @@ def user_verification(verification_token):
         return response_with(response_code.SUCCESS_200, value={'message': 'Email verified, you can proceed login now'})
 
 
-@users_blueprint.route('/<user_id>/avatar', methods=['POST'])
+@users_blueprint.route('/avatar', methods=['POST'])
 @exception
 @jwt_required
-def set_user_avatar(user_id):
-    """
-    Upload user's avatar
-
-    :param user_id: User ID
-    """
+def set_user_avatar():
+    """Upload user's avatar"""
     file = request.files['avatar']
-    user = User.objects(id=user_id).get()
+    user_email = get_jwt_identity()
+    user = User.objects(email=user_email).get()
     if file and allowed_file(file):
         filename = secure_filename(file.filename)
         filename = str(user.id) + os.path.splitext(filename)[1]
