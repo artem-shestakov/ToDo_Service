@@ -6,7 +6,7 @@ from todo.utils.token import generate_verification_token, confirm_verification_t
 from todo.utils.email import send_email
 from todo.utils.upload import allowed_file
 import todo.utils.response_code as response_code
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from .models import User, UserSchema, Role
 from todo.board.models import Board, BoardSchema
 import base64
@@ -24,13 +24,17 @@ users_blueprint = Blueprint(
 @users_blueprint.route('/', methods=['GET'])
 @exception
 @jwt_required
-@has_role(['administrator'])
 def get_users():
-    """Getting all users"""
-    users = User.objects.all()
-    users_schema = UserSchema(many=True, exclude=['password'])
-    users = users_schema.dump(users)
-    return response_with(response_code.SUCCESS_200, value={'users': users})
+    """Getting user's profile"""
+    user_email = get_jwt_identity()
+    user = User.objects(email=user_email).get()
+    boards = Board.objects(user=user).all()
+    user_schema = UserSchema(exclude=['password'])
+    user = user_schema.dump(user)
+    board_schema = BoardSchema(many=True, exclude=['user', 'lists'])
+    boards = board_schema.dump(boards)
+    user['boards'] = boards
+    return response_with(response_code.SUCCESS_200, value={'user': user})
 
 
 @users_blueprint.route('/', methods=['POST'])
@@ -64,6 +68,7 @@ def create_user():
 @users_blueprint.route('/<user_id>', methods=['GET'])
 @exception
 @jwt_required
+@has_role(['administrator'])
 def get_user_by_id(user_id):
     """
     Getting user's info by ID
@@ -83,6 +88,7 @@ def get_user_by_id(user_id):
 @users_blueprint.route('/<user_id>', methods=['PUT'])
 @exception
 @jwt_required
+@has_role(['administrator'])
 def update_user(user_id):
     """
     Update user's attributes
