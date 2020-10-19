@@ -18,7 +18,7 @@ def response_with(response, headers={}, value=None, message=None):
             result.update({'message': response['message'] + f'. {message}'})
         else:
             result.update({'message': response['message']})
-    result.update({'type': response['code']})
+    result.update({'code': response['code']})
     headers.update({'Access-Control-Allow-Origin': '*'})
     headers.update({'Server': current_app.config['NAME']})
     return make_response(jsonify(result), response['http_code'], headers)
