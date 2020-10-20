@@ -53,6 +53,11 @@ def create_app(config_object):
 
     jwt = JWTManager(app)
 
+    @app.errorhandler(401)
+    def not_found(e):
+        logging.error(e)
+        return response_with(response_code.UNAUTHORIZED_401)
+
     @app.errorhandler(404)
     def not_found(e):
         logging.error(e)

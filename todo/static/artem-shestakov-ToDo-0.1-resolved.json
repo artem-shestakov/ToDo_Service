@@ -1,0 +1,591 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ToDo by Artem Shestakov",
+    "description": "API ToDo service by Artem Shestakov",
+    "version": "0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Authentocation methods"
+    },
+    {
+      "name": "Users",
+      "description": "User's methods"
+    },
+    {
+      "name": "Administration",
+      "description": "Administartor's methods"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Login user and get JWT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "email": "artem.s.shestakov@yandex.ru",
+                "password": "password"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDI0OTU1NTMsIm5iZiI6MTYwMjQ5NTU1MywianRpIjoiYTNjZGE0ZDUtZGJkYi00YzM3LWFiZmEtMTVjZGMxMjljYjdhIiwiZXhwIjoxNjAyNDk2NDUzLCJpZGVudGl0eSI6ImFydGVtLnMuc2hlc3Rha292QHlhbmRleC5ydSIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.6pLYdWhamC1OKICPAfpbKPg1XOcr0iqdFuOhfQxMi9g",
+                  "type": "success",
+                  "message": "Logged in as artem.s.shestakov@yandex.ru"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Invalid email or password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "401": {
+                    "value": "{\n  \"code\": \"unauthoried\",\n  \"message\": \"Unauthoried. Invalid email or password\"\n}\n"
+                  },
+                  "404": {
+                    "value": "{\n  \"code\": \"notFound\",\n  \"message\": \"Not found. User matching query does not exist\"\n}\n"
+                  },
+                  "422": {
+                    "value": "{\n  \"code\": \"missingParameter\",\n  \"message\": \"Missing parameters. Could not get JSON or JSON empty\"\n}\n"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get your profile",
+        "responses": {
+          "201": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_User_Response"
+                },
+                "example": {
+                  "type": "success",
+                  "user": {
+                    "user": {
+                      "id": "5f6e6b33a24ddd1542e947e9",
+                      "email": "artem.s.shestakov@yandex.ru",
+                      "first_name": "Artem",
+                      "last_name": "Shestakov",
+                      "avatar": "5f6e6b33a24ddd1542e947e9.png",
+                      "is_verified": true,
+                      "created": "2020-09-26T01:11:43.860000",
+                      "boards": [
+                        {
+                          "id": "5f71fb3321998d0bb716ea92",
+                          "title": "Developement"
+                        }
+                      ]
+                    },
+                    "type": "success"
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Errors with requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "400": {
+                    "value": "{\n  \"message\": \"Bad request. '5f6e05a7a550b763b47fdc2addd1542e947e9' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "404": {
+                    "value": "{\n  \"message\": \"Not found. User matching query does not exist.\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "422": {
+                    "value": "{\n  \"message\": \"Missing parameters. Could not get JSON or JSON empty\",\n  \"type\": \"missingParameter\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Create new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "email": "artem.s.shestakov@yandex.ru",
+                "password": "password",
+                "first_name": "Artem",
+                "last_name": "Shestakov"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New user created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_User_Response"
+                },
+                "example": {
+                  "type": "success",
+                  "user": {
+                    "avatar": null,
+                    "created": "2020-10-14T23:43:27.129022",
+                    "email": "artem.s.shestakov@yandex.ru.ru",
+                    "first_name": "Artem",
+                    "id": "5f8766eea6ab67384072db02",
+                    "is_verified": true,
+                    "last_name": "Shestakov"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "User with this email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": "serverError",
+                  "message": "Server error. Tried to save duplicate unique keys (E11000 duplicate key error collection: todo.user index: email_1 dup key: { email: \"artem.s.shestakov@yandex.ru\" }, full error: {'index': 0, 'code': 11000, 'keyPattern': {'email': 1}, 'keyValue': {'email': 'artem.s.shestakov@yandex.ru'}, 'errmsg': 'E11000 duplicate key error collection: todo.user index: email_1 dup key: { email: \"artem.s.shestakov@yandex.ru\" }'})"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Errors with request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "401": {
+                    "value": "{\n  msg: \"Missing Authorization Header\"\n}\n"
+                  },
+                  "403": {
+                    "value": "{\n  msg: \"Token has expired\"\n}\n"
+                  },
+                  "422": {
+                    "value": "{\n  msg: \"Signature verification failed\"\n}\n"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/users/avatar/": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get user's avatar",
+        "responses": {
+          "200": {
+            "description": "User's avatar image",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "$ref": "#/components/schemas/Images"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Errors with requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "400": {
+                    "value": "{\n  \"message\": \"Bad request. '5f6e05a7a550b763b47fdc2addd1542e947e9' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "404": {
+                    "value": "{\n  \"message\": \"Not found. User matching query does not exist.\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "422": {
+                    "value": "{\n  \"message\": \"Missing parameters. Could not get JSON or JSON empty\",\n  \"type\": \"missingParameter\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/users/{user_id}": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "description": "Get user profile",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_User_Response"
+                },
+                "example": {
+                  "type": "success",
+                  "user": {
+                    "avatar": "5f6e6b33a24ddd1542e947e9.png",
+                    "boards": [
+                      {
+                        "id": "5f71fb3321998d0bb716ea92",
+                        "title": "Developement"
+                      }
+                    ],
+                    "created": "2020-09-26T01:11:43.860000",
+                    "email": "artem.s.shestakov@yandex.ru",
+                    "first_name": "Artem",
+                    "id": "5f6e6b33a24ddd1542e947e9",
+                    "is_verified": true,
+                    "last_name": "Shestakov"
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Errors with requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "400": {
+                    "value": "{\n  \"message\": \"Bad request. '5f6e05a7a550b763b47fdc2addd1542e947e9' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "404": {
+                    "value": "{\n  \"message\": \"Not found. User matching query does not exist.\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "422": {
+                    "value": "{\n  \"message\": \"Missing parameters. Could not get JSON or JSON empty\",\n  \"type\": \"missingParameter\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Administration"
+        ],
+        "description": "Update user profile",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "all": {
+                  "value": {
+                    "email": "artem.s.shestakov@yandex.ru",
+                    "first_name": "Artem",
+                    "last_name": "Shestakov"
+                  }
+                },
+                "email and first name": {
+                  "value": {
+                    "email": "artem.s.shestakov@yandex.ru",
+                    "first_name": "Artem"
+                  }
+                },
+                "last name": {
+                  "value": {
+                    "last_name": "Shestakov"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_User_Response"
+                },
+                "example": {
+                  "type": "success",
+                  "user": {
+                    "avatar": null,
+                    "created": "2020-10-14T23:43:27.129022",
+                    "email": "artem.s.shestakov@yandex.ru.ru",
+                    "first_name": "Artem",
+                    "id": "5f8766eea6ab67384072db02",
+                    "is_verified": true,
+                    "last_name": "Shestakov"
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Errors with requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "400": {
+                    "value": "{\n  \"message\": \"Bad request. '5f6e05a7a550b763b47fdc2addd1542e947e9' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "404": {
+                    "value": "{\n  \"message\": \"Not found. User matching query does not exist.\",\n  \"type\": \"badRequest\"\n}\n"
+                  },
+                  "422": {
+                    "value": "{\n  \"message\": \"Missing parameters. Could not get JSON or JSON empty\",\n  \"type\": \"missingParameter\"\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Success_User_Response": {
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "avatar": {
+                "type": "string"
+              },
+              "created": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "first_name": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              },
+              "is_verified": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "Images": {
+        "type": "string",
+        "format": "binary"
+      }
+    },
+    "responses": {
+      "4XX": {
+        "description": "Errors with requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "examples": {
+              "400": {
+                "value": "{\n  \"message\": \"Bad request. '5f6e05a7a550b763b47fdc2addd1542e947e9' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string\",\n  \"type\": \"badRequest\"\n}\n"
+              },
+              "404": {
+                "value": "{\n  \"message\": \"Not found. User matching query does not exist.\",\n  \"type\": \"badRequest\"\n}\n"
+              },
+              "422": {
+                "value": "{\n  \"message\": \"Missing parameters. Could not get JSON or JSON empty\",\n  \"type\": \"missingParameter\"\n}"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
