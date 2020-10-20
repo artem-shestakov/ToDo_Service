@@ -1,5 +1,4 @@
-from flask_restful import Api
-from .users.views import UserApi
+from .users.views import UserApi, UserAvatarApi
 
 
 def create_module(app, **kwargs):
@@ -7,4 +6,6 @@ def create_module(app, **kwargs):
     from .routes import swagger_blueprint, SWAGGER_URL
     app.register_blueprint(swagger_blueprint, url_prefix=SWAGGER_URL)
 
+    # Users
     app.add_url_rule('/api/v1/users', view_func=UserApi.as_view('users'))
+    app.add_url_rule('/api/v1/users/avatar', view_func=UserAvatarApi.as_view('avatars'))
