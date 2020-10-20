@@ -27,6 +27,7 @@ class Config(object):
     MAIL_PASSWORD = email_password
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
+    AVATAR_SERVER = None
     CELERY_BROKER_URL = f"amqp://{rabbitmq_user}:{rabbitmq_user_password}@127.0.0.1//"
     CELERY_RESULT_BACKEND = f"rpc://{rabbitmq_user}:{rabbitmq_user_password}@127.0.0.1//"
     CELERY_IMPORTS = ["todo.utils.email"]

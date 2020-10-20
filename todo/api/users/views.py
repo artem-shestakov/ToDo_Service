@@ -1,4 +1,4 @@
-from flask import request, render_template, send_from_directory, current_app
+from flask import request, render_template, send_from_directory, current_app, url_for
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from werkzeug.utils import secure_filename
@@ -12,6 +12,7 @@ import todo.utils.response_code as response_code
 from todo.utils.upload import allowed_file
 import base64
 import os
+import hashlib
 
 
 class UserApi(MethodView):
@@ -103,10 +104,12 @@ class UserAvatarApi(MethodView):
         user_email = get_jwt_identity()
         user = User.objects(email=user_email).get()
         if file and allowed_file(file):
-            filename = secure_filename(file.filename)
-            filename = str(user.id) + os.path.splitext(filename)[1]
+            filename = hashlib.md5(user.email.lower().encode('utf-8')).hexdigest()
             file.save(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}{filename}")
-            user.avatar = filename
+            if current_app.config['AVATAR_SERVER']:
+                user.avatar = current_app.config['AVATAR_SERVER'] + filename
+            else:
+                user.avatar = filename
             user.save()
             user_schema = UserSchema(exclude=['password'])
             user = user_schema.dump(user)
