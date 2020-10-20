@@ -1,6 +1,7 @@
-from flask import request, render_template
+from flask import request, render_template, send_from_directory, current_app
 from flask.views import MethodView
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from werkzeug.utils import secure_filename
 from todo.users.models import User, UserSchema, Role
 from todo.board.models import Board, BoardSchema
 from todo.utils.response import response_with
@@ -8,7 +9,9 @@ from todo.utils.token import generate_verification_token, confirm_verification_t
 from todo.utils.email import send_email
 from todo.utils.decorators import exception
 import todo.utils.response_code as response_code
+from todo.utils.upload import allowed_file
 import base64
+import os
 
 
 class UserApi(MethodView):
@@ -74,3 +77,40 @@ class UserApi(MethodView):
                 return response_with(response_code.MISSING_PARAMETERS_422, message='Check you JSON request')
         else:
             return response_with(response_code.MISSING_PARAMETERS_422, message='Could not get JSON or JSON empty')
+
+
+class UserAvatarApi(MethodView):
+    @jwt_required
+    @exception
+    def get(self):
+        """
+        Getting user's avatar
+
+        :return: Avatar image
+        """
+        user_email = get_jwt_identity()
+        user = User.objects(email=user_email).get()
+        if user.avatar:
+            return send_from_directory(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}", user.avatar)
+        else:
+            return response_with(response_code.NOT_FOUND_404)
+
+    @jwt_required
+    @exception
+    def post(self):
+        """Upload user's avatar"""
+        file = request.files['avatar']
+        user_email = get_jwt_identity()
+        user = User.objects(email=user_email).get()
+        if file and allowed_file(file):
+            filename = secure_filename(file.filename)
+            filename = str(user.id) + os.path.splitext(filename)[1]
+            file.save(f"{current_app.root_path}{current_app.config['UPLOAD_FOLDER']}{filename}")
+            user.avatar = filename
+            user.save()
+            user_schema = UserSchema(exclude=['password'])
+            user = user_schema.dump(user)
+            return response_with(response_code.SUCCESS_201, value={'user': user})
+        else:
+            return response_with(response_code.INVALID_INPUT_422,
+                                 message='No image in request or image format is not accepted')
